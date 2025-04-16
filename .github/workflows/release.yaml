@@ -12,7 +12,7 @@ jobs:
   release-please:
     if: github.repository_owner == 'mirceanton' # ? don't run on forks
     runs-on: ubuntu-latest
-    container: ghcr.io/mirceanton/gha-runner-semantic-release@v24
+    container: ghcr.io/mirceanton/gha-runner-semantic-release@sha256:30b5371d70d4af6da124149e0b2e2144b91caa6d48030f205a09f4e1f4bf6eeb
     steps:
       - name: Generate Token
         uses: actions/create-github-app-token@3ff1caaa28b64c9cc276ce0a02e2ff584f3900c5 # v2.0.2
