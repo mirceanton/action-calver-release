@@ -8,10 +8,10 @@ A GitHub Action that creates new releases using Calendar Versioning (CalVer) wit
 - Increments patch number if a release already exists for the current month
 - Supports dry run mode for testing
 - Generates release notes automatically
+- Emits useful [outputs](#outputs) for other downstream jobs
+- Generates [job summaries](https://github.com/mirceanton/action-calver-release/actions/runs/14502744077)
 
 ## Usage
-
-### Basic Usage
 
 ```yaml
 name: Release
@@ -63,6 +63,25 @@ jobs:
 |-------|-------------|----------|---------|
 | `github-token` | GitHub token with repository access | Yes | N/A |
 | `dry-run` | Perform a dry run without creating an actual release | No | `false` |
+
+## Outputs
+
+| Output | Description |
+|--------|-------------|
+| `release-tag` | The generated release tag (e.g., 2025.4.0) |
+| `previous-tag` | The previous release tag that was used as reference |
+| `release-url` | URL to the created GitHub release |
+
+## How It Works
+
+1. Retrieves the previous release tag using GitHub CLI
+2. Extracts the year, month, and patch components from the previous tag
+3. Compares with the current date to determine if a new month has started
+4. Generates the new release tag:
+   - For the same month: increments patch number by 1
+   - For a new month: resets patch number to 0
+5. Creates a GitHub release with the new tag and auto-generated notes
+6. Provides the release URL and tag information as outputs
 
 ## Versioning
 
