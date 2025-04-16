@@ -33,18 +33,24 @@ runs:
         GH_TOKEN: "${{ inputs.github-token }}"
         DRY_RUN: "${{ inputs.dry-run }}"
       run: |
-        echo "# CalVer Release Process" >> $GITHUB_STEP_SUMMARY
+        echo "# 📅 CalVer Release Process" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
 
         # =========================================================================================
         # Retrieve previous release tag
         # =========================================================================================
+        echo "## 📋 Release Information" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        
         previous_tag="$(gh release list --limit 1 | awk '{ print $1 }')"
         if [ -z "$previous_tag" ]; then
-          echo "No previous releases found. This will be the first release." >> $GITHUB_STEP_SUMMARY
+          echo "ℹ️ **No previous releases found.** This will be the first release." >> $GITHUB_STEP_SUMMARY
           previous_tag="0.0.0"
+        else
+          echo "🏷️ **Previous release tag:** \`${previous_tag}\`" >> $GITHUB_STEP_SUMMARY
         fi
         echo "previous_tag=$previous_tag" >> $GITHUB_STATE
-        echo "Previous release tag: $previous_tag" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
 
         # =========================================================================================
         # Determine next release tag
@@ -58,41 +64,63 @@ runs:
         previous_month="${previous_month%.*}"
         previous_patch="${previous_tag##*.}"
 
+        echo "### Version Components" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "| Component | Previous Value | New Value |" >> $GITHUB_STEP_SUMMARY
+        echo "|-----------|----------------|-----------|" >> $GITHUB_STEP_SUMMARY
+        echo "| Year      | ${previous_year} | $(date +'%Y') |" >> $GITHUB_STEP_SUMMARY
+        echo "| Month     | ${previous_month} | $(date +'%-m') |" >> $GITHUB_STEP_SUMMARY
+
         if [[ "${previous_year}.${previous_month}" == "${next_year_month}" ]]; then
-            echo "Month release already exists for year => incrementing patch number by 1" >> $GITHUB_STEP_SUMMARY
             next_patch="$((previous_patch + 1))"
+            echo "| Patch     | ${previous_patch} | ${next_patch} ⬆️ |" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "ℹ️ Month release already exists for this year → **incrementing patch number by 1**" >> $GITHUB_STEP_SUMMARY
         else
-            echo "Month release does not exist for year => setting patch number to 0" >> $GITHUB_STEP_SUMMARY
             next_patch="0"
+            echo "| Patch     | ${previous_patch} | ${next_patch} 🔄 |" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "ℹ️ First release for this month → **resetting patch number to 0**" >> $GITHUB_STEP_SUMMARY
         fi
 
         release_tag="${next_year_month}.${next_patch}"
         echo "release_tag=$release_tag" >> $GITHUB_STATE
-        echo "New release tag: `$release_tag`\n" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "🚀 **New release tag:** \`${release_tag}\`" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
 
         # =========================================================================================
         # Create release
         # =========================================================================================
-        release_cmd="gh release create \"$release_tag\" --repo=\"${GITHUB_REPOSITORY}\" --title=\"$release_title\" --generate-notes"
+        echo "## 🔄 Release Process" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        
+        release_cmd="gh release create \"$release_tag\" --repo=\"${GITHUB_REPOSITORY}\" --title=\"$release_tag\" --generate-notes"
         if [[ "${DRY_RUN}" == "true" ]]; then
-            echo "Runnging in dry-run mode! This will **not** actually create a new release!" >> $GITHUB_STEP_SUMMARY
+            echo "⚠️ **Running in dry-run mode!** This will **not** actually create a new release!" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
             echo "The command that *would have* run is: " >> $GITHUB_STEP_SUMMARY
             echo "```bash" >> $GITHUB_STEP_SUMMARY
             echo "$release_cmd" >> $GITHUB_STEP_SUMMARY
             echo "```" >> $GITHUB_STEP_SUMMARY
-            echo "✅ Dry run completed successfully" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "✅ **Dry run completed successfully**" >> $GITHUB_STEP_SUMMARY
 
             echo "release_url=''" >> $GITHUB_STATE
         else
-            echo "Creating release..." >> $GITHUB_STEP_SUMMARY
+            echo "⏳ Creating release..." >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
 
             if release_output=$(eval "$release_cmd" 2>&1); then
               release_url="https://github.com/$GITHUB_REPOSITORY/releases/tag/$release_tag"
-              echo "✅ Release created successfully at: [$release_url]($release_url)" >> $GITHUB_STEP_SUMMARY
+              echo "✅ **Release created successfully!**" >> $GITHUB_STEP_SUMMARY
+              echo "" >> $GITHUB_STEP_SUMMARY
+              echo "📎 **Release URL:** [${release_url}](${release_url})" >> $GITHUB_STEP_SUMMARY
 
               echo "release_url=$release_url" >> $GITHUB_STATE
             else
-              echo "❌ Release creation failed with error:" >> $GITHUB_STEP_SUMMARY
+              echo "❌ **Release creation failed with error:**" >> $GITHUB_STEP_SUMMARY
+              echo "" >> $GITHUB_STEP_SUMMARY
               echo "```" >> $GITHUB_STEP_SUMMARY
               echo "$release_output" >> $GITHUB_STEP_SUMMARY
               echo "```" >> $GITHUB_STEP_SUMMARY
@@ -100,11 +128,13 @@ runs:
             fi
         fi
 
-        echo "## Action Outputs" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "## 📤 Action Outputs" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
         echo "| Output | Value |" >> $GITHUB_STEP_SUMMARY
         echo "|--------|-------|" >> $GITHUB_STEP_SUMMARY
-        echo "| release-tag | $release_tag |" >> $GITHUB_STEP_SUMMARY
-        echo "| previous-tag | $previous_tag |" >> $GITHUB_STEP_SUMMARY
+        echo "| release-tag | \`$release_tag\` |" >> $GITHUB_STEP_SUMMARY
+        echo "| previous-tag | \`$previous_tag\` |" >> $GITHUB_STEP_SUMMARY
         if [[ "${DRY_RUN}" != "true" ]]; then
-          echo "| release-url | $release_url |" >> $GITHUB_STEP_SUMMARY
+          echo "| release-url | [$release_url]($release_url) |" >> $GITHUB_STEP_SUMMARY
         fi
