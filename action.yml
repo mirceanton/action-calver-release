@@ -56,7 +56,7 @@ runs:
       run: |
         # Get previous tag value from previous step
         previous_tag="${{ steps.get-previous-tag.outputs.previous_tag }}"
-        
+
         # Get current YYYY.MM
         next_year_month="$(date +'%Y').$(date +'%-m')"
 
@@ -103,7 +103,7 @@ runs:
         echo "" >> $GITHUB_STEP_SUMMARY
 
         release_cmd="gh release create \"$RELEASE_TAG\" --repo=\"${GITHUB_REPOSITORY}\" --title=\"$RELEASE_TAG\" --generate-notes"
-        
+
         if [[ "${DRY_RUN}" == "true" ]]; then
             echo "⚠️ **Running in dry-run mode!** This will **not** actually create a new release!" >> $GITHUB_STEP_SUMMARY
             echo "" >> $GITHUB_STEP_SUMMARY
