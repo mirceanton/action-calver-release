@@ -44,7 +44,7 @@ runs:
           previous_tag="0.0.0"
         fi
         echo "previous_tag=$previous_tag" >> $GITHUB_STATE
-        echo "Previous release tag: `$previous_tag`" >> $GITHUB_STEP_SUMMARY
+        echo "Previous release tag: $previous_tag" >> $GITHUB_STEP_SUMMARY
 
         # =========================================================================================
         # Determine next release tag
