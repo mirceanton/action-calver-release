@@ -35,25 +35,28 @@ runs:
       run: |
         echo "# CalVer Release Process" >> $GITHUB_STEP_SUMMARY
 
+        # =========================================================================================
         # Retrieve previous release tag
+        # =========================================================================================
         previous_tag="$(gh release list --limit 1 | awk '{ print $1 }')"
-        echo "previous_tag=$previous_tag" >> $GITHUB_STATE
-
         if [ -z "$previous_tag" ]; then
           echo "No previous releases found. This will be the first release." >> $GITHUB_STEP_SUMMARY
           previous_tag="0.0.0"
-        else
-          echo "Previous release tag: `$previous_tag`" >> $GITHUB_STEP_SUMMARY
         fi
+        echo "previous_tag=$previous_tag" >> $GITHUB_STATE
+        echo "Previous release tag: `$previous_tag`" >> $GITHUB_STEP_SUMMARY
 
-        # Extract year, month and patch from tag
+        # =========================================================================================
+        # Determine next release tag
+        # =========================================================================================
+        # Get current YYYY.MM
+        next_year_month="$(date +'%Y').$(date +'%-m')"
+
+        # Extract year, month and patch from previous tag
         previous_year="${previous_tag%%\.*}"
         previous_month="${previous_tag#*.}"
         previous_month="${previous_month%.*}"
         previous_patch="${previous_tag##*.}"
-
-        # Determine next release tag
-        next_year_month="$(date +'%Y').$(date +'%-m')"
 
         if [[ "${previous_year}.${previous_month}" == "${next_year_month}" ]]; then
             echo "Month release already exists for year => incrementing patch number by 1" >> $GITHUB_STEP_SUMMARY
@@ -65,10 +68,11 @@ runs:
 
         release_tag="${next_year_month}.${next_patch}"
         echo "release_tag=$release_tag" >> $GITHUB_STATE
-
         echo "New release tag: `$release_tag`\n" >> $GITHUB_STEP_SUMMARY
 
+        # =========================================================================================
         # Create release
+        # =========================================================================================
         release_cmd="gh release create \"$release_tag\" --repo=\"${GITHUB_REPOSITORY}\" --title=\"$release_title\" --generate-notes"
         if [[ "${DRY_RUN}" == "true" ]]; then
             echo "Runnging in dry-run mode! This will **not** actually create a new release!" >> $GITHUB_STEP_SUMMARY
