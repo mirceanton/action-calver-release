@@ -8,6 +8,10 @@ inputs:
     description: "Perform a dry run without creating an actual release"
     required: false
     default: "false"
+  draft:
+    description: "Mark the release as a draft (unpublished)"
+    required: false
+    default: "false"
   github-token:
     description: "GitHub token with repository access"
     required: true
@@ -91,7 +95,25 @@ runs:
         echo "🚀 **New release tag:** \`${release_tag}\`" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY
 
+    - name: Dry Run Summary
+      if: inputs.dry-run == 'true'
+      id: dry-run-summary
+      shell: bash
+      env:
+        RELEASE_TAG: "${{ steps.calculate-version.outputs.release_tag }}"
+      run: |
+        echo "## 🔍 Dry Run Mode" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "⚠️ **This was a dry run. No release was created.**" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "If this was a real run, version \`${{ env.RELEASE_TAG }}\` would have been created." >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "To create an actual release, run with \`dry-run\` set to \`false\`." >> $GITHUB_STEP_SUMMARY
+
+        echo "release_url=''" >> $GITHUB_OUTPUT
+
     - name: Create Release
+      if: inputs.dry-run != 'true'
       id: create-release
       shell: bash
       env:
@@ -102,38 +124,30 @@ runs:
         echo "## 🔄 Release Process" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY
 
-        release_cmd="gh release create \"$RELEASE_TAG\" --repo=\"${GITHUB_REPOSITORY}\" --title=\"$RELEASE_TAG\" --generate-notes"
+        EXTRA_FLAGS=""
+        if [ "${{ inputs.draft }}" = "true" ]; then
+          EXTRA_FLAGS="${EXTRA_FLAGS} --draft"
+        fi
 
-        if [[ "${DRY_RUN}" == "true" ]]; then
-            echo "⚠️ **Running in dry-run mode!** This will **not** actually create a new release!" >> $GITHUB_STEP_SUMMARY
-            echo "" >> $GITHUB_STEP_SUMMARY
-            echo "The command that *would have* run is: " >> $GITHUB_STEP_SUMMARY
-            echo "```bash" >> $GITHUB_STEP_SUMMARY
-            echo "$release_cmd" >> $GITHUB_STEP_SUMMARY
-            echo "```" >> $GITHUB_STEP_SUMMARY
-            echo "" >> $GITHUB_STEP_SUMMARY
-            echo "✅ **Dry run completed successfully**" >> $GITHUB_STEP_SUMMARY
+        gh release create "${{ env.RELEASE_TAG }}" \
+          --title "${{ env.RELEASE_TAG }}" \
+          --notes "${{ env.RELEASE_NOTES }}" \
+          ${EXTRA_FLAGS}
 
-            echo "release_url=''" >> $GITHUB_OUTPUT
+        if $?; then
+          release_url="https://github.com/$GITHUB_REPOSITORY/releases/tag/$RELEASE_TAG"
+          echo "✅ **Release created successfully!**" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "📎 **Release URL:** [${release_url}](${release_url})" >> $GITHUB_STEP_SUMMARY
+
+          echo "release_url=$release_url" >> $GITHUB_OUTPUT
         else
-            echo "⏳ Creating release..." >> $GITHUB_STEP_SUMMARY
-            echo "" >> $GITHUB_STEP_SUMMARY
-
-            if release_output=$(eval "$release_cmd" 2>&1); then
-              release_url="https://github.com/$GITHUB_REPOSITORY/releases/tag/$RELEASE_TAG"
-              echo "✅ **Release created successfully!**" >> $GITHUB_STEP_SUMMARY
-              echo "" >> $GITHUB_STEP_SUMMARY
-              echo "📎 **Release URL:** [${release_url}](${release_url})" >> $GITHUB_STEP_SUMMARY
-
-              echo "release_url=$release_url" >> $GITHUB_OUTPUT
-            else
-              echo "❌ **Release creation failed with error:**" >> $GITHUB_STEP_SUMMARY
-              echo "" >> $GITHUB_STEP_SUMMARY
-              echo "```" >> $GITHUB_STEP_SUMMARY
-              echo "$release_output" >> $GITHUB_STEP_SUMMARY
-              echo "```" >> $GITHUB_STEP_SUMMARY
-              exit 1
-            fi
+          echo "❌ **Release creation failed with error:**" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "```" >> $GITHUB_STEP_SUMMARY
+          echo "$release_output" >> $GITHUB_STEP_SUMMARY
+          echo "```" >> $GITHUB_STEP_SUMMARY
+          exit 1
         fi
 
     - name: Summarize Outputs
