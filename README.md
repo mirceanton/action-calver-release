@@ -11,13 +11,14 @@ A GitHub Action that creates new releases using Calendar Versioning (CalVer) wit
 - Emits useful [outputs](#outputs) for other downstream jobs
 - Generates [job summaries](https://github.com/mirceanton/action-calver-release/actions/runs/14502744077)
 
-## Usage
+## Example Usage
 
 ```yaml
+---
 name: Release
 
 on:
-  # Manually trigger "wet"/"dry" runs from the action tab
+  # Manually trigger a new release from the Actions tab
   workflow_dispatch:
     inputs:
       dry-run:
@@ -26,19 +27,14 @@ on:
         required: false
         type: boolean
 
-  # "Wet" run on any push to the main branch that changes a relevant file
-  push:
-    branches: ["main"]
-    paths:
-      - action.yml
-      - .github/workflows/release.yaml
-
-  # "Dry" run on any PR to the main branch that changes a relevant file
+  # Dry run on any PR to the main branch to make sure the workflow would run
+  # successfully before merging
   pull_request:
     branches: ["main"]
-    paths:
-      - action.yml
-      - .github/workflows/release.yaml
+
+  # Automatically create releases on every push to the main branch
+  push:
+    branches: ["main"]
 
 jobs:
   release:
@@ -50,7 +46,7 @@ jobs:
           token: "${{ secrets.GITHUB_TOKEN }}"
 
       - name: Create Release
-        uses: mirceanton/action-calver-release@2025.4.0
+        uses: mirceanton/action-calver-release@2025.4.1
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           dry-run: ${{ (inputs.dry-run || github.event_name == 'pull_request') }}
