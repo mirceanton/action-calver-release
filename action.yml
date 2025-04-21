@@ -8,6 +8,10 @@ inputs:
     description: "Perform a dry run without creating an actual release"
     required: false
     default: "false"
+  draft:
+    description: "Create the release as a draft (unpublished)."
+    required: false
+    default: "false"
   github-token:
     description: "GitHub token with repository access"
     required: true
@@ -102,7 +106,7 @@ runs:
         echo "## 🔄 Release Process" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY
 
-        release_cmd="gh release create \"$RELEASE_TAG\" --repo=\"${GITHUB_REPOSITORY}\" --title=\"$RELEASE_TAG\" --generate-notes"
+        release_cmd="gh release create \"$RELEASE_TAG\" --repo=\"${GITHUB_REPOSITORY}\" --title=\"$RELEASE_TAG\" --generate-notes --draft=${{ inputs.draft }}"
 
         if [[ "${DRY_RUN}" == "true" ]]; then
             echo "⚠️ **Running in dry-run mode!** This will **not** actually create a new release!" >> $GITHUB_STEP_SUMMARY
