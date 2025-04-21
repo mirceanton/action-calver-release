@@ -106,7 +106,13 @@ runs:
         echo "## 🔄 Release Process" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY
 
-        release_cmd="gh release create \"$RELEASE_TAG\" --repo=\"${GITHUB_REPOSITORY}\" --title=\"$RELEASE_TAG\" --generate-notes --draft=${{ inputs.draft }}"
+        release_cmd=<<EOF
+          gh release create \"$RELEASE_TAG\" \
+            --repo=\"${GITHUB_REPOSITORY}\" \
+            --title=\"$RELEASE_TAG\" \
+            --draft=${{ inputs.draft }}" \
+            --generate-notes
+        EOF
 
         if [[ "${DRY_RUN}" == "true" ]]; then
             echo "⚠️ **Running in dry-run mode!** This will **not** actually create a new release!" >> $GITHUB_STEP_SUMMARY
