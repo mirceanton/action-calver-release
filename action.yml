@@ -126,8 +126,8 @@ runs:
         echo "" >> $GITHUB_STEP_SUMMARY
 
         gh release create \"$RELEASE_TAG\" \
-          --repo=\"${GITHUB_REPOSITORY}\" \
           --title=\"$RELEASE_TAG\" \
+          --repo=${GITHUB_REPOSITORY} \
           --draft=${{ inputs.draft }} \
           --generate-notes
 
