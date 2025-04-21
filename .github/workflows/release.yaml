@@ -10,6 +10,11 @@ on:
         default: false
         required: false
         type: boolean
+      draft:
+        description: Draft Release
+        default: false
+        required: false
+        type: boolean
 
   push:
     branches: ["main"]
@@ -44,3 +49,4 @@ jobs:
         with:
           github-token: ${{ steps.app-token.outputs.token }}
           dry-run: ${{ (inputs.dry-run || github.event_name == 'pull_request') }}
+          draft: ${{ inputs.draft || 'false' }}

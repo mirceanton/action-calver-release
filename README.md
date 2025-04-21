@@ -26,6 +26,11 @@ on:
         default: false
         required: false
         type: boolean
+      draft:
+        description: Draft Release
+        default: false
+        required: false
+        type: boolean
 
   # Dry run on any PR to the main branch to make sure the workflow would run
   # successfully before merging
@@ -50,6 +55,7 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           dry-run: ${{ (inputs.dry-run || github.event_name == 'pull_request') }}
+          draft: ${{ inputs.draft }}
 
 ```
 
@@ -59,6 +65,7 @@ jobs:
 |-------|-------------|----------|---------|
 | `github-token` | GitHub token with repository access | Yes | N/A |
 | `dry-run` | Perform a dry run without creating an actual release | No | `false` |
+| `draft` | Create release as a draft (unpublished). | No | `false` |
 
 ## Outputs
 
