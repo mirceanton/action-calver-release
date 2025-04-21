@@ -130,7 +130,7 @@ runs:
           --title=\"$RELEASE_TAG\" \
           --draft=${{ inputs.draft }}" \
           --generate-notes
-        
+
         release_url="https://github.com/$GITHUB_REPOSITORY/releases/tag/$RELEASE_TAG"
         echo "✅ **Release created successfully!**" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY
