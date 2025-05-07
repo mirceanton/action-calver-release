@@ -1,0 +1,8 @@
+[tools]
+# Linters
+"aqua:rhysd/actionlint" = "1.7.7"
+"npm:@commitlint/cli" = "19.8.0"
+
+# Renovate
+node = "22"
+"npm:renovate" = "40.8.1"

@@ -1,45 +1,44 @@
 ---
 # yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
 name: Release
+permissions: { contents: read }
 
 on:
+  schedule: [{cron: '0 0 * * *'}] # wet run
+  push:
+    paths:
+      - action.yml
+      - .github/workflows/release.yaml
   workflow_dispatch:
     inputs:
       dry-run:
-        description: Dry Run
-        default: false
+        description: 'Dry run mode (no actual release)'
         required: false
+        default: false
         type: boolean
       draft:
-        description: Draft Release
+        description: Mark Release as Draft
         default: false
         required: false
         type: boolean
 
-  push:
-    branches: ["main"]
-    paths:
-      - action.yml
-      - .github/workflows/release.yaml
-
-  pull_request:
-    branches: ["main"]
-    paths:
-      - action.yml
-      - .github/workflows/release.yaml
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.number || github.ref }}
+  cancel-in-progress: true
 
 jobs:
   release:
+    if: github.repository_owner == 'mirceanton' # ? don't run on forks
     runs-on: ubuntu-latest
     steps:
       - name: Generate Token
-        uses: actions/create-github-app-token@3ff1caaa28b64c9cc276ce0a02e2ff584f3900c5 # v2.0.2
+        uses: actions/create-github-app-token@df432ceedc7162793a195dd1713ff69aefc7379e # v2.0.6
         id: app-token
         with:
           app-id: "${{ secrets.BOT_APP_ID }}"
           private-key: "${{ secrets.BOT_APP_PRIVATE_KEY }}"
 
-      - name: Checkout
+      - name: Checkout code
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           token: "${{ steps.app-token.outputs.token }}"
@@ -48,5 +47,5 @@ jobs:
         uses: ./
         with:
           github-token: ${{ steps.app-token.outputs.token }}
-          dry-run: ${{ (inputs.dry-run || github.event_name == 'pull_request') }}
+          dry-run: ${{ (github.event_name == 'workflow_dispatch' && inputs.dry-run) || github.event_name == 'push' }}
           draft: ${{ inputs.draft || 'false' }}
