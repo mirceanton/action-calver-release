@@ -5,4 +5,4 @@
 
 # Renovate
 node = "22"
-"npm:renovate" = "40.13.0"
+"npm:renovate" = "40.13.1"
