@@ -4,7 +4,7 @@ name: Renovate
 permissions: { contents: read }
 
 on:
-  schedule: [{ cron: "0 * * * *" }]
+  schedule: [{ cron: '0 * * * *' }]
   workflow_dispatch:
     inputs:
       dry-run:
@@ -43,8 +43,8 @@ jobs:
         uses: actions/create-github-app-token@df432ceedc7162793a195dd1713ff69aefc7379e # v2.0.6
         id: app-token
         with:
-          app-id: "${{ secrets.BOT_APP_ID }}"
-          private-key: "${{ secrets.BOT_APP_PRIVATE_KEY }}"
+          app-id: '${{ secrets.BOT_APP_ID }}'
+          private-key: '${{ secrets.BOT_APP_PRIVATE_KEY }}'
 
       - name: Run Renovate
         run: mise exec -- renovate
@@ -53,6 +53,6 @@ jobs:
           LOG_LEVEL: "${{ inputs.log-level || 'debug' }}"
           RENOVATE_CONFIG_FILE: .renovaterc.json
           RENOVATE_AUTODISCOVER: true
-          RENOVATE_AUTODISCOVER_FILTER: "${{ github.repository }}"
-          RENOVATE_DRY_RUN: "${{ inputs.dry-run == true }}"
-          RENOVATE_TOKEN: "${{ steps.app-token.outputs.token }}"
+          RENOVATE_AUTODISCOVER_FILTER: '${{ github.repository }}'
+          RENOVATE_DRY_RUN: '${{ inputs.dry-run == true }}'
+          RENOVATE_TOKEN: '${{ steps.app-token.outputs.token }}'
