@@ -35,11 +35,11 @@ on:
   # Dry run on any PR to the main branch to make sure the workflow would run
   # successfully before merging
   pull_request:
-    branches: ["main"]
+    branches: ['main']
 
   # Automatically create releases on every push to the main branch
   push:
-    branches: ["main"]
+    branches: ['main']
 
 jobs:
   release:
@@ -48,7 +48,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
-          token: "${{ secrets.GITHUB_TOKEN }}"
+          token: '${{ secrets.GITHUB_TOKEN }}'
 
       - name: Create Release
         uses: mirceanton/action-calver-release@2025.4.1
@@ -56,24 +56,23 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           dry-run: ${{ (inputs.dry-run || github.event_name == 'pull_request') }}
           draft: ${{ inputs.draft }}
-
 ```
 
 ## Inputs
 
-| Input | Description | Required | Default |
-|-------|-------------|----------|---------|
-| `github-token` | GitHub token with repository access | Yes | N/A |
-| `dry-run` | Perform a dry run without creating an actual release | No | `false` |
-| `draft` | Create release as a draft (unpublished). | No | `false` |
+| Input          | Description                                          | Required | Default |
+| -------------- | ---------------------------------------------------- | -------- | ------- |
+| `github-token` | GitHub token with repository access                  | Yes      | N/A     |
+| `dry-run`      | Perform a dry run without creating an actual release | No       | `false` |
+| `draft`        | Create release as a draft (unpublished).             | No       | `false` |
 
 ## Outputs
 
-| Output | Description |
-|--------|-------------|
-| `release-tag` | The generated release tag (e.g., 2025.4.0) |
+| Output         | Description                                         |
+| -------------- | --------------------------------------------------- |
+| `release-tag`  | The generated release tag (e.g., 2025.4.0)          |
 | `previous-tag` | The previous release tag that was used as reference |
-| `release-url` | URL to the created GitHub release |
+| `release-url`  | URL to the created GitHub release                   |
 
 ## How It Works
 
