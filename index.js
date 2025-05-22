@@ -49,6 +49,19 @@ async function calculateNewVersion(previousTag) {
   const previousPatch = parseInt(tagParts[2]) || 0;
 
   // Add version components table to summary
+  let nextPatch;
+  let nextPatchIcon;
+  if (`${previousYear}.${previousMonth}` === nextYearMonth) {
+    nextPatch = previousPatch + 1;
+    nextPatchIcon = '🔼';
+  } else {
+    nextPatch = 0;
+    nextPatchIcon = '🔄';
+  }
+
+  const releaseTag = `${nextYearMonth}.${nextPatch}`;
+  await core.summary.addRaw(`🚀 **New release tag:** \`${releaseTag}\`\n\n`);
+
   await core.summary.addRaw('### Version Components\n\n');
   await core.summary.addTable([
     [
@@ -57,22 +70,9 @@ async function calculateNewVersion(previousTag) {
       { data: 'New Value', header: true }
     ],
     ['Year', previousYear.toString(), currentYear.toString()],
-    ['Month', previousMonth.toString(), currentMonth.toString()]
+    ['Month', previousMonth.toString(), currentMonth.toString()],
+    ['Patch', previousPatch.toString(), nextPatch.toString() + ' ' + nextPatchIcon]
   ]);
-
-  let nextPatch;
-  if (`${previousYear}.${previousMonth}` === nextYearMonth) {
-    nextPatch = previousPatch + 1;
-    await core.summary.addRaw(`| Patch | ${previousPatch} | ${nextPatch} ⬆️ |\n\n`);
-    await core.summary.addRaw('ℹ️ Month release already exists for this year → **incrementing patch number by 1**\n\n');
-  } else {
-    nextPatch = 0;
-    await core.summary.addRaw(`| Patch | ${previousPatch} | ${nextPatch} 🔄 |\n\n`);
-    await core.summary.addRaw('ℹ️ First release for this month → **resetting patch number to 0**\n\n');
-  }
-
-  const releaseTag = `${nextYearMonth}.${nextPatch}`;
-  await core.summary.addRaw(`🚀 **New release tag:** \`${releaseTag}\`\n\n`);
 
   return releaseTag;
 }
