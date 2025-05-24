@@ -4,6 +4,10 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import js from '@eslint/js';
 import { FlatCompat } from '@eslint/eslintrc';
+import jest from 'eslint-plugin-jest';
+import prettier from 'eslint-plugin-prettier';
+import _import from 'eslint-plugin-import';
+import { fixupPluginRules } from '@eslint/compat';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -13,12 +17,17 @@ const compat = new FlatCompat({
   allConfig: js.configs.all
 });
 
-export default defineConfig([
+export default [
   globalIgnores(['**/node_modules/', '**/dist/', '**/coverage/', '**/*.min.js']),
 
-  // Base configuration for all files
+  ...compat.extends('eslint:recommended', 'plugin:jest/recommended', 'plugin:prettier/recommended'),
+
   {
-    extends: compat.extends('eslint:recommended'),
+    plugins: {
+      import: fixupPluginRules(_import),
+      jest,
+      prettier
+    },
 
     languageOptions: {
       globals: {
@@ -30,89 +39,15 @@ export default defineConfig([
     },
 
     rules: {
-      indent: ['error', 2],
-      'linebreak-style': ['error', 'unix'],
-      quotes: ['error', 'single'],
-      semi: ['error', 'always'],
-
-      'no-unused-vars': [
-        'error',
-        {
-          argsIgnorePattern: '^_'
-        }
-      ],
-
+      camelcase: 'off',
+      'eslint-comments/no-use': 'off',
+      'eslint-comments/no-unused-disable': 'off',
+      'i18n-text/no-en': 'off',
+      'import/no-namespace': 'off',
       'no-console': 'off',
-      eqeqeq: ['error', 'always'],
-      curly: ['error', 'all'],
-      'brace-style': ['error', '1tbs'],
-      'comma-dangle': ['error', 'never'],
-      'array-bracket-spacing': ['error', 'never'],
-      'object-curly-spacing': ['error', 'always'],
-
-      'keyword-spacing': [
-        'error',
-        {
-          before: true,
-          after: true
-        }
-      ],
-
-      'space-before-blocks': ['error', 'always']
-    }
-  },
-
-  // Jest configuration for test files
-  {
-    files: ['**/*.test.js', '**/*.spec.js'],
-    extends: compat.extends('plugin:jest/recommended'),
-
-    languageOptions: {
-      globals: {
-        ...globals.node,
-        ...globals.jest
-      },
-
-      ecmaVersion: 2021,
-      sourceType: 'module'
-    },
-
-    rules: {
-      indent: ['error', 2],
-      'linebreak-style': ['error', 'unix'],
-      quotes: ['error', 'single'],
-      semi: ['error', 'always'],
-
-      'no-unused-vars': [
-        'error',
-        {
-          argsIgnorePattern: '^_'
-        }
-      ],
-
-      'no-console': 'off',
-      eqeqeq: ['error', 'always'],
-      curly: ['error', 'all'],
-      'brace-style': ['error', '1tbs'],
-      'comma-dangle': ['error', 'never'],
-      'array-bracket-spacing': ['error', 'never'],
-      'object-curly-spacing': ['error', 'always'],
-
-      'keyword-spacing': [
-        'error',
-        {
-          before: true,
-          after: true
-        }
-      ],
-
-      'space-before-blocks': ['error', 'always'],
-
-      // Jest-specific rule adjustments
-      'jest/expect-expect': 'error',
-      'jest/no-disabled-tests': 'warn',
-      'jest/no-focused-tests': 'error',
-      'jest/prefer-to-have-length': 'warn'
+      'no-shadow': 'off',
+      'no-unused-vars': 'off',
+      'prettier/prettier': 'error'
     }
   }
-]);
+];

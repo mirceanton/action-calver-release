@@ -55,20 +55,20 @@ describe('CalVer Release Action', () => {
     // Setup
     core.getInput.mockImplementation((name) => {
       switch (name) {
-      case 'github-token':
-        return 'test-token';
-      default:
-        return '';
+        case 'github-token':
+          return 'test-token';
+        default:
+          return '';
       }
     });
     core.getBooleanInput.mockImplementation((name) => {
       switch (name) {
-      case 'dry-run':
-        return true;
-      case 'draft':
-        return false;
-      default:
-        return false;
+        case 'dry-run':
+          return true;
+        case 'draft':
+          return false;
+        default:
+          return false;
       }
     });
 
@@ -93,20 +93,20 @@ describe('CalVer Release Action', () => {
     // Setup
     core.getInput.mockImplementation((name) => {
       switch (name) {
-      case 'github-token':
-        return 'test-token';
-      default:
-        return '';
+        case 'github-token':
+          return 'test-token';
+        default:
+          return '';
       }
     });
     core.getBooleanInput.mockImplementation((name) => {
       switch (name) {
-      case 'dry-run':
-        return true;
-      case 'draft':
-        return false;
-      default:
-        return false;
+        case 'dry-run':
+          return true;
+        case 'draft':
+          return false;
+        default:
+          return false;
       }
     });
 
@@ -132,20 +132,20 @@ describe('CalVer Release Action', () => {
     // Setup
     core.getInput.mockImplementation((name) => {
       switch (name) {
-      case 'github-token':
-        return 'test-token';
-      default:
-        return '';
+        case 'github-token':
+          return 'test-token';
+        default:
+          return '';
       }
     });
     core.getBooleanInput.mockImplementation((name) => {
       switch (name) {
-      case 'dry-run':
-        return true;
-      case 'draft':
-        return false;
-      default:
-        return false;
+        case 'dry-run':
+          return true;
+        case 'draft':
+          return false;
+        default:
+          return false;
       }
     });
 
@@ -167,20 +167,20 @@ describe('CalVer Release Action', () => {
     // Setup
     core.getInput.mockImplementation((name) => {
       switch (name) {
-      case 'github-token':
-        return 'test-token';
-      default:
-        return '';
+        case 'github-token':
+          return 'test-token';
+        default:
+          return '';
       }
     });
     core.getBooleanInput.mockImplementation((name) => {
       switch (name) {
-      case 'dry-run':
-        return false;
-      case 'draft':
-        return false;
-      default:
-        return false;
+        case 'dry-run':
+          return false;
+        case 'draft':
+          return false;
+        default:
+          return false;
       }
     });
 
@@ -204,10 +204,10 @@ describe('CalVer Release Action', () => {
     // Setup
     core.getInput.mockImplementation((name) => {
       switch (name) {
-      case 'github-token':
-        return 'test-token';
-      default:
-        return '';
+        case 'github-token':
+          return 'test-token';
+        default:
+          return '';
       }
     });
     core.getBooleanInput.mockReturnValue(false);
