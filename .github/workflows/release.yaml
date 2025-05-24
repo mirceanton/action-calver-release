@@ -4,12 +4,11 @@ name: Release
 permissions: { contents: read }
 
 on:
-  schedule: [{ cron: '0 0 * * *' }] # wet run
   push:
+    branches: [main, master]
     paths:
+      - dist/**
       - action.yml
-      - .github/workflows/release.yaml
-      - index.js
   workflow_dispatch:
     inputs:
       dry-run:
@@ -49,5 +48,5 @@ jobs:
         uses: ./
         with:
           github-token: ${{ steps.app-token.outputs.token }}
-          dry-run: ${{ (github.event_name == 'workflow_dispatch' && inputs.dry-run) || (github.event_name == 'push') }}
+          dry-run: ${{ (github.event_name == 'workflow_dispatch' && inputs.dry-run) }}
           draft: ${{ inputs.draft || 'false' }}
