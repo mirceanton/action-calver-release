@@ -12,7 +12,7 @@
     "versioning"
   ],
   "scripts": {
-    "build": "ncc build index.js -o dist",
+    "build": "ncc build src/index.js -o dist",
     "test": "jest",
     "lint": "eslint . --fix",
     "lint:check": "eslint .",
