@@ -178,7 +178,7 @@ describe('CalVer Release Action', () => {
         case 'dry-run':
           return false;
         case 'draft':
-          return false;
+          return false; // Explicitly set draft to false
         default:
           return false;
       }
@@ -196,8 +196,58 @@ describe('CalVer Release Action', () => {
     await run();
 
     // Verify
-    expect(mockOctokit.rest.repos.createRelease).toHaveBeenCalled();
+    expect(mockOctokit.rest.repos.createRelease).toHaveBeenCalledWith(
+      expect.objectContaining({
+        draft: false
+      })
+    );
     expect(core.setOutput).toHaveBeenCalledWith('release-url', releaseUrl);
+  });
+
+  test('should create a draft release when draft mode is enabled', async () => {
+    const releaseUrl = 'https://github.com/test-owner/test-repo/releases/tag/2025.1.0';
+
+    // Setup
+    core.getInput.mockImplementation((name) => {
+      switch (name) {
+        case 'github-token':
+          return 'test-token';
+        default:
+          return '';
+      }
+    });
+    core.getBooleanInput.mockImplementation((name) => {
+      switch (name) {
+        case 'dry-run':
+          return false;
+        case 'draft':
+          return true;
+        default:
+          return false;
+      }
+    });
+
+    mockOctokit.rest.repos.listReleases.mockResolvedValue({
+      data: []
+    });
+
+    mockOctokit.rest.repos.createRelease.mockResolvedValue({
+      data: { html_url: releaseUrl }
+    });
+
+    // Execute
+    await run();
+
+    // Verify
+    expect(mockOctokit.rest.repos.createRelease).toHaveBeenCalledWith(
+      expect.objectContaining({
+        owner: 'test-owner',
+        repo: 'test-repo',
+        draft: true
+      })
+    );
+    expect(core.setOutput).toHaveBeenCalledWith('release-url', releaseUrl);
+    expect(core.info).toHaveBeenCalledWith(expect.stringContaining('created'));
   });
 
   test('should handle API errors gracefully', async () => {
