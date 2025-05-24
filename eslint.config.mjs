@@ -15,6 +15,8 @@ const compat = new FlatCompat({
 
 export default defineConfig([
   globalIgnores(['**/node_modules/', '**/dist/', '**/coverage/', '**/*.min.js']),
+
+  // Base configuration for all files
   {
     extends: compat.extends('eslint:recommended'),
 
@@ -57,6 +59,60 @@ export default defineConfig([
       ],
 
       'space-before-blocks': ['error', 'always']
+    }
+  },
+
+  // Jest configuration for test files
+  {
+    files: ['**/*.test.js', '**/*.spec.js'],
+    extends: compat.extends('plugin:jest/recommended'),
+
+    languageOptions: {
+      globals: {
+        ...globals.node,
+        ...globals.jest
+      },
+
+      ecmaVersion: 2021,
+      sourceType: 'module'
+    },
+
+    rules: {
+      indent: ['error', 2],
+      'linebreak-style': ['error', 'unix'],
+      quotes: ['error', 'single'],
+      semi: ['error', 'always'],
+
+      'no-unused-vars': [
+        'error',
+        {
+          argsIgnorePattern: '^_'
+        }
+      ],
+
+      'no-console': 'off',
+      eqeqeq: ['error', 'always'],
+      curly: ['error', 'all'],
+      'brace-style': ['error', '1tbs'],
+      'comma-dangle': ['error', 'never'],
+      'array-bracket-spacing': ['error', 'never'],
+      'object-curly-spacing': ['error', 'always'],
+
+      'keyword-spacing': [
+        'error',
+        {
+          before: true,
+          after: true
+        }
+      ],
+
+      'space-before-blocks': ['error', 'always'],
+
+      // Jest-specific rule adjustments
+      'jest/expect-expect': 'error',
+      'jest/no-disabled-tests': 'warn',
+      'jest/no-focused-tests': 'error',
+      'jest/prefer-to-have-length': 'warn'
     }
   }
 ]);
