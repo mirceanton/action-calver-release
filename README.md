@@ -2,15 +2,6 @@
 
 A GitHub Action that creates new releases using Calendar Versioning (CalVer) with the format `YYYY.MM.PATCH`.
 
-## Features
-
-- Automatically generates the next version number based on the date
-- Increments patch number if a release already exists for the current month
-- Supports dry run mode for testing
-- Generates [release notes](https://github.com/mirceanton/action-calver-release/releases/tag/2025.4.1) automatically
-- Emits useful [outputs](#outputs) for other downstream jobs
-- Generates [job summaries](https://github.com/mirceanton/action-calver-release/actions/runs/14502744077)
-
 ## Example Usage
 
 ```yaml
