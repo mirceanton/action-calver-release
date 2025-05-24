@@ -115,6 +115,7 @@ async function createRelease(octokit, context, releaseTag, isDraft) {
  * @param {string} releaseTag - The tag that would be created
  */
 async function addDryRunSummary(releaseTag) {
+  await core.summary.addRaw('\n\n');
   await core.summary.addRaw('## 🔍 Dry Run Mode\n\n');
   await core.summary.addRaw('⚠️ **This was a dry run. No release was created.**\n\n');
   await core.summary.addRaw(`If this was a real run, version \`${releaseTag}\` would have been created.\n\n`);
