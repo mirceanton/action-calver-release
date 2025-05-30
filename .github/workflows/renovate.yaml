@@ -16,7 +16,7 @@ on:
         description: Log Level
         type: choice
         default: debug
-        options: [ debug, info ]
+        options: [debug, info]
         required: true
 
 concurrency:
