@@ -5,7 +5,10 @@ permissions:
   contents: write
 
 on:
-  push: {}
+  push:
+    branches: ["main", "renovate/**"]
+  pull_request:
+    branches: ["main"]
 
 jobs:
   check-dist:
