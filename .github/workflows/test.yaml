@@ -6,9 +6,9 @@ permissions: { contents: read }
 on:
   workflow_dispatch: {}
   push:
-    branches: ["main", "renovate/**"]
+    branches: ['main', 'renovate/**']
   pull_request:
-    branches: ["main"]
+    branches: ['main']
 
 jobs:
   lint:

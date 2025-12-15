@@ -6,9 +6,9 @@ permissions:
 
 on:
   push:
-    branches: ["main", "renovate/**"]
+    branches: ['main', 'renovate/**']
   pull_request:
-    branches: ["main"]
+    branches: ['main']
 
 jobs:
   check-dist:
