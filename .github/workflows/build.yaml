@@ -6,9 +6,9 @@ permissions:
 
 on:
   push:
-    branches: ["main", "renovate/**"]
+    branches: ['main', 'renovate/**']
   pull_request:
-    branches: ["main"]
+    branches: ['main']
 
 jobs:
   check-dist:
@@ -16,7 +16,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
-        with: { token: "${{ secrets.GITHUB_TOKEN }}" }
+        with: { token: '${{ secrets.GITHUB_TOKEN }}' }
 
       - name: Setup mise
         uses: jdx/mise-action@146a28175021df8ca24f8ee1828cc2a60f980bd5 # v3.5.1
@@ -30,7 +30,7 @@ jobs:
       - name: Push changes
         env:
           CI_COMMIT_AUTHOR: mr-borboto[bot]
-          CI_COMMIT_MESSAGE: "chore: update dist [skip ci]"
+          CI_COMMIT_MESSAGE: 'chore: update dist [skip ci]'
           CI_COMMIT_EMAIL: 170036086+mr-borboto[bot]@users.noreply.github.com
         run: |
           if [ -z "$(git status --porcelain dist/)" ]; then
