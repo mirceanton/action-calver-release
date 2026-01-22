@@ -20,7 +20,7 @@
     "format:check": "prettier --check ."
   },
   "dependencies": {
-    "@actions/core": "2.0.0",
+    "@actions/core": "2.0.2",
     "@actions/github": "7.0.0"
   },
   "devDependencies": {
