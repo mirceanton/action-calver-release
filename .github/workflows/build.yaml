@@ -28,6 +28,7 @@ jobs:
         run: npm run build
 
       - name: Push changes
+        if: github.event_name == 'push'
         env:
           CI_COMMIT_AUTHOR: mr-borboto[bot]
           CI_COMMIT_MESSAGE: 'build: update dist'
