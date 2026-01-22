@@ -30,7 +30,7 @@ jobs:
       - name: Push changes
         env:
           CI_COMMIT_AUTHOR: mr-borboto[bot]
-          CI_COMMIT_MESSAGE: 'chore: update dist [skip ci]'
+          CI_COMMIT_MESSAGE: 'build: update dist'
           CI_COMMIT_EMAIL: 170036086+mr-borboto[bot]@users.noreply.github.com
         run: |
           if [ -z "$(git status --porcelain dist/)" ]; then
