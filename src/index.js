@@ -1,5 +1,5 @@
-const core = require('@actions/core');
-const github = require('@actions/github');
+import * as core from '@actions/core';
+import * as github from '@actions/github';
 
 /**
  * Get the previous release tag from GitHub
@@ -196,9 +196,11 @@ async function run() {
   }
 }
 
-// Run the action
-if (require.main === module) {
+// Run the action when executed directly
+const isMainModule = import.meta.url === `file://${process.argv[1]}` || process.argv[1]?.endsWith('/src/index.js');
+
+if (isMainModule) {
   run();
 }
 
-module.exports = { run };
+export { run };
