@@ -2,6 +2,7 @@
   "name": "action-calver-release",
   "version": "1.0.0",
   "description": "GitHub Action to creates new releases using Calendar Versioning (CalVer)",
+  "type": "module",
   "main": "dist/index.js",
   "author": "Mircea-Pavel Anton",
   "license": "MIT",
@@ -13,7 +14,7 @@
   ],
   "scripts": {
     "build": "ncc build src/index.js -o dist",
-    "test": "jest",
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
     "lint": "eslint . --fix",
     "lint:check": "eslint .",
     "format": "prettier --write .",

@@ -1,26 +1,40 @@
-const { run } = require('./index');
-const core = require('@actions/core');
-const github = require('@actions/github');
+import { jest, describe, test, expect, beforeEach } from '@jest/globals';
 
-// Mock the GitHub Actions toolkit
-jest.mock('@actions/core');
-jest.mock('@actions/github');
+// Mock the GitHub Actions toolkit before importing
+jest.unstable_mockModule('@actions/core', () => ({
+  getInput: jest.fn(),
+  getBooleanInput: jest.fn(),
+  setOutput: jest.fn(),
+  setFailed: jest.fn(),
+  info: jest.fn(),
+  summary: {
+    addRaw: jest.fn().mockResolvedValue(undefined),
+    addTable: jest.fn().mockResolvedValue(undefined),
+    write: jest.fn().mockResolvedValue(undefined)
+  }
+}));
+
+jest.unstable_mockModule('@actions/github', () => ({
+  getOctokit: jest.fn(),
+  context: {
+    repo: {
+      owner: 'test-owner',
+      repo: 'test-repo'
+    }
+  }
+}));
+
+// Import modules after mocking
+const core = await import('@actions/core');
+const github = await import('@actions/github');
+const { run } = await import('./index.js');
 
 describe('CalVer Release Action', () => {
   let mockOctokit;
-  let mockContext;
 
   beforeEach(() => {
     // Clear all mocks
     jest.clearAllMocks();
-
-    // Mock GitHub context
-    mockContext = {
-      repo: {
-        owner: 'test-owner',
-        repo: 'test-repo'
-      }
-    };
 
     // Mock Octokit
     mockOctokit = {
@@ -34,21 +48,11 @@ describe('CalVer Release Action', () => {
 
     // Mock GitHub modules
     github.getOctokit.mockReturnValue(mockOctokit);
-    github.context = mockContext;
 
-    // Mock core.summary
-    core.summary = {
-      addRaw: jest.fn().mockResolvedValue(undefined),
-      addTable: jest.fn().mockResolvedValue(undefined),
-      write: jest.fn().mockResolvedValue(undefined)
-    };
-
-    // Mock other core functions
-    core.getInput = jest.fn();
-    core.getBooleanInput = jest.fn();
-    core.setOutput = jest.fn();
-    core.setFailed = jest.fn();
-    core.info = jest.fn();
+    // Reset summary mocks
+    core.summary.addRaw.mockResolvedValue(undefined);
+    core.summary.addTable.mockResolvedValue(undefined);
+    core.summary.write.mockResolvedValue(undefined);
   });
 
   test('should handle first release (no previous releases)', async () => {
