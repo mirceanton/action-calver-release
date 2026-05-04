@@ -12,25 +12,25 @@ on:
 
 jobs:
   actionlint:
-    runs-on: ubuntu-latest
+    runs-on: infra-runners
     steps:
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
       - name: Setup mise
-        uses: jdx/mise-action@1648a7812b9aeae629881980618f079932869151 # v4.0.1
+        run: mise install
 
       - name: Run actionlint
         run: mise exec -- actionlint
 
   eslint:
-    runs-on: ubuntu-latest
+    runs-on: infra-runners
     steps:
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
       - name: Setup mise
-        uses: jdx/mise-action@1648a7812b9aeae629881980618f079932869151 # v4.0.1
+        run: mise install
 
       - name: Install dependencies
         run: npm ci
@@ -39,13 +39,13 @@ jobs:
         run: npm run lint:check
 
   prettier:
-    runs-on: ubuntu-latest
+    runs-on: infra-runners
     steps:
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
       - name: Setup mise
-        uses: jdx/mise-action@1648a7812b9aeae629881980618f079932869151 # v4.0.1
+        run: mise install
 
       - name: Install dependencies
         run: npm ci
