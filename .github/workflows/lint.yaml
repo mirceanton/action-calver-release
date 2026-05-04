@@ -21,7 +21,7 @@ jobs:
         uses: jdx/mise-action@v4.0.1
         with:
           cache: true
-          cache_key: "mise"
+          cache_key: 'mise'
 
       - name: Run actionlint
         run: mise exec -- actionlint
