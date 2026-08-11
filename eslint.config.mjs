@@ -6,8 +6,7 @@ import js from '@eslint/js';
 import { FlatCompat } from '@eslint/eslintrc';
 import jest from 'eslint-plugin-jest';
 import prettier from 'eslint-plugin-prettier';
-import _import from 'eslint-plugin-import';
-import { fixupPluginRules } from '@eslint/compat';
+import importX from 'eslint-plugin-import-x';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -24,7 +23,7 @@ export default [
 
   {
     plugins: {
-      import: fixupPluginRules(_import),
+      'import-x': importX,
       jest,
       prettier
     },
@@ -43,7 +42,7 @@ export default [
       'eslint-comments/no-use': 'off',
       'eslint-comments/no-unused-disable': 'off',
       'i18n-text/no-en': 'off',
-      'import/no-namespace': 'off',
+      'import-x/no-namespace': 'off',
       'no-console': 'off',
       'no-shadow': 'off',
       'no-unused-vars': 'off',
