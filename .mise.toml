@@ -7,3 +7,7 @@ gh = "2.103.2"
 # =================================================================================================
 "aqua:rhysd/actionlint" = "1"
 "npm:@commitlint/cli" = "21"
+
+[settings]
+# Hold back freshly published tool releases (supply-chain protection).
+minimum_release_age = "3d"
