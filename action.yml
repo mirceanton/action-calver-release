@@ -25,5 +25,5 @@ outputs:
     description: 'URL to the created GitHub release'
 
 runs:
-  using: 'node24'
+  using: 'node26'
   main: 'dist/index.js'
